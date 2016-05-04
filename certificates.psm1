@@ -128,8 +128,39 @@ Function Get-CertWebSite {
 Function Import-CertWebSite {
 
 <#
+    .Synopsis
+        Imports (binds) a certificate to a website.
+
+    .Description
+        Binding a certificate to a website is a two step process.  This cmdlet combines the two steps into one.  Creates the web binding and binds the Certificate to the website.
+
+    .Parameter $ComputerName
+        Name of the computer the website lives on.
+
+    .parameter WebSiteName
+        name of the website 
+
+    .Parameter Port
+        Port to bind to the website
+
+    .Parameter IPAddress
+        IP to bind to the website
+
+    .Parameter HostHeader
+        HostHeader to bind the website
+
+    .Parameter Certificate
+        Certificate to bind to the website
+
+    .Example
+        Import-CertWebSite -ComputerName $CRMServer -WebSiteName "Microsoft Dynamics CRM" -Certificate $Certificate -verbose
+
     .Link
         http://www.iis.net/learn/manage/powershell/powershell-snap-in-configuring-ssl-with-the-iis-powershell-snap-in
+
+    .Note
+        Author : Jeff Buenting
+        Data : 2016 MAY 04
 #>
 
 
@@ -153,57 +184,40 @@ Function Import-CertWebSite {
 
     Process {
         Write-Verbose "Import-CertWebSite : Adding SSL Cert to Website $WebSiteName on "
-  #      if ( $ComputerName = '.' ) {
-  #              Write-Verbose "Import-CertWebSite :          Local Machine"
-  #              import-module webadministration -force
+ 
+        Write-Verbose "Import-CertWebSite :          $ComputerName"
+        Invoke-Command -ComputerName $ComputerName -Argumentlist $WebSiteName,$Port,$IPAddress,$HostHeader,$Certificate -ScriptBlock {
+                param (
+                [Parameter(Mandatory=$true)]
+                [String]$WebSiteName,
 
-  #              Write-Verbose "Import-CertWebSite : Binding to website"
-  #              if ( ( Get-WebBinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader ) -eq $Null ) {
-  #
-   #                     New-WebBinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader
+                [Int]$Port = 443,
 
-   #                     # ----- Assign cert to web binding
-   #                     if ( $IPAddress -eq '*' ) { $IPAddress = '0.0.0.0' }
-   #                     get-item "cert:\localMachine\my\$($Certificate.ThumbPrint)" | New-Item "IIS:\SSLBindings\$IPAddress!$Port"
-   #                }
-   #                 else {
-   #                     Write-Verbose "Binding already exists for $WebSite HTTPS $($IPAddress):$($Port):$HostHeader"
-   #             }
-   #        }
-   #         Else {
-                Write-Verbose "Import-CertWebSite :          $ComputerName"
-                Invoke-Command -ComputerName $ComputerName -Argumentlist $WebSiteName,$Port,$IPAddress,$HostHeader,$Certificate -ScriptBlock {
-                        param (
-                        [Parameter(Mandatory=$true)]
-                        [String]$WebSiteName,
+                [String]$IPAddress = '*',
 
-                        [Int]$Port = 443,
-
-                        [String]$IPAddress = '*',
-
-                        [String]$HostHeader = '',
+                [String]$HostHeader = '',
         
-                        [Parameter(Mandatory=$true)]
-                        [System.Security.Cryptography.X509Certificates.X509Certificate2]$Certificate 
-                    )
+                [Parameter(Mandatory=$true)]
+                [System.Security.Cryptography.X509Certificates.X509Certificate2]$Certificate 
+            )
 
-                    #----- Set verbose pref to what calling shell is set to
-                    $VerbosePreference=$Using:VerbosePreference
+            #----- Set verbose pref to what calling shell is set to
+            $VerbosePreference=$Using:VerbosePreference
 
-                    import-module webadministration -force
+            import-module webadministration -force
                     
 
-                    if ( -Not ( Get-Webbinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader ) ) {
-                        Write-Verbose "Import-CertWebSite : Binding to website"
-                        New-WebBinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader
-                    }
+            if ( -Not ( Get-Webbinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader ) ) {
+                Write-Verbose "Import-CertWebSite : Binding to website"
+                New-WebBinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader
+            }
             
-                    Write-Verbose "Import-CertWebsite : Assign Cert to Web Binding"
-                    # ----- Assign cert to web binding
-                    if ( $IPAddress -eq '*' ) { $IPAddress = '0.0.0.0' }
-                    $Certificate | New-Item "IIS:\SSLBindings\$IPAddress!$Port" # -Value $Certificate
-                }
-  #      }
+            Write-Verbose "Import-CertWebsite : Assign Cert to Web Binding"
+            # ----- Assign cert to web binding
+            if ( $IPAddress -eq '*' ) { $IPAddress = '0.0.0.0' }
+            $Certificate | New-Item "IIS:\SSLBindings\$IPAddress!$Port"
+        }
+
     }
 
 }
