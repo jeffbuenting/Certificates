@@ -28,83 +28,30 @@ Function Get-Cert {
 
     Process {
         ForEach ( $C in $ComputerName ) {
-            Write-Verbose "Get-Cert : Getting Certificates on $C\$CertStore"
-            $store = New-Object System.Security.Cryptography.X509Certificates.X509Store("\\$C\$CertStore",$CertRootStore)
-            $store.Open("ReadOnly")
-            Write-Output $store.Certificates
-            $Store.Close()
+            Write-Verbose "Getting Certs on $C"
+            invoke-command -ComputerName $C -ArgumentList $CertRootStore,$CertStore -ScriptBlock {
+                param (
+                    [string]$CertRootStore,
+
+                    [String]$CertStore
+                )
+                
+                # ----- Run Verbose if calling function is verbose
+                $VerbosePreference=$Using:VerbosePreference
+
+                Write-Verbose "Get-Cert : Getting Certificates from $CertRootStore\$CertStore"
+                $store = New-Object System.Security.Cryptography.X509Certificates.X509Store($CertStore,$CertRootStore)
+                $store.Open("ReadOnly")
+                Write-Output $store.Certificates
+                $Store.Close()
+            }
         }
     }
 }
 
 #---------------------------------------------------------------------------------------
 
-Function Import-Cert {
 
-<#
-    .Link
-        http://www.orcsweb.com/blog/james/powershell-ing-on-windows-server-how-to-import-certificates-using-powershell/
-
-#>
-
-    [CmdletBinding()]
-    param (
-        [Parameter(ValueFromPipeLine=$True)]  
-        [String[]]$ComputerName = '.',
-
-        [String]$certPath,
-
-        [Validateset('CurrentUser','LocalMachine')]
-        [String]$certRootStore = “CurrentUser”,
-
-        [String]$certStore = “My”,
-
-        $Password = $null
-    )
-
-    Process {
-        Foreach ( $C in $ComputerName ) {
-            Write-Verbose "import new Certificates on $C\$CertRootStore"
-            if ( $Password -eq $Null ) {
-                    Write-Verbose "Importing a certificate that does not require a password"
-
-                    $pfx = new-object System.Security.Cryptography.X509Certificates.X509Certificate2
-                    $pfx.import($certPath) 
-                    $store = new-object System.Security.Cryptography.X509Certificates.X509Store("\\$C\$certStore",$certRootStore)
-                    $store.open(“MaxAllowed”)
-                    $store.add($pfx)
-                    $store.close()
-                    Write-Output (get-cert -ComputerName $C -CertRootStore $certRootStore -CertStore $CertStore | where ThumbPrint -eq $PFX.ThumbPrint)
-                }
-                else {
-                    Write-Verbose "Importing a certificate that requires a password."
-
-                    $pfx = new-object System.Security.Cryptography.X509Certificates.X509Certificate2
-
-                    Write-Verbose "Password = $Password"
- 
-                    #if ($pfxPass -eq $null ) {$pfxPass = read-host “Enter the certificate password” -assecurestring}
- 
-                    $pfx.import($certPath,$Password,“Exportable,PersistKeySet”)
-
-                    if ( (get-cert -ComputerName $C -CertRootStore $certRootStore -CertStore $CertStore | where ThumbPrint -eq $PFX.ThumbPrint) -eq $Null ) {
-                            Write-Verbose 'Certtificate does not exist, importing'
- 
-                            $store = new-object System.Security.Cryptography.X509Certificates.X509Store("\\$C\$certStore",$certRootStore)
-                            $store.open(“MaxAllowed”)
-                            $store.add($pfx)
-                            $store.close()
-                            Write-Output (get-cert -ComputerName $C -CertRootStore $certRootStore -CertStore $CertStore | where ThumbPrint -eq $PFX.ThumbPrint)
-                        }
-                        else {
-                            Write-Verbose 'Certificate already exists.'
-                            Write-Output (get-cert -ComputerName $C -CertRootStore $certRootStore -CertStore $CertStore | where ThumbPrint -eq $PFX.ThumbPrint)
-                    }
-            }
-
-        }
-    }
-}
 
 #---------------------------------------------------------------------------------------
 
@@ -244,14 +191,17 @@ Function Import-CertWebSite {
                     $VerbosePreference=$Using:VerbosePreference
 
                     import-module webadministration -force
-                   
-                    Write-Verbose "Import-CertWebSite : Binding to website"
-                    New-WebBinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader
+                    
+
+                    if ( -Not ( Get-Webbinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader ) ) {
+                        Write-Verbose "Import-CertWebSite : Binding to website"
+                        New-WebBinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader
+                    }
             
                     Write-Verbose "Import-CertWebsite : Assign Cert to Web Binding"
                     # ----- Assign cert to web binding
                     if ( $IPAddress -eq '*' ) { $IPAddress = '0.0.0.0' }
-                    New-Item "IIS:\SSLBindings\$IPAddress!$Port" -Value $Certificate
+                    $Certificate | New-Item "IIS:\SSLBindings\$IPAddress!$Port" # -Value $Certificate
                 }
   #      }
     }
