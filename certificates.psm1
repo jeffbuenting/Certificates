@@ -179,14 +179,16 @@ Function Import-CertWebSite {
         [String]$HostHeader = '',
         
         [Parameter(Mandatory=$true)]
-        [System.Security.Cryptography.X509Certificates.X509Certificate2]$Certificate 
+        [System.Security.Cryptography.X509Certificates.X509Certificate2]$Certificate,
+        
+        [PSCredential]$Credential 
     )
 
     Process {
         Write-Verbose "Import-CertWebSite : Adding SSL Cert to Website $WebSiteName on "
  
         Write-Verbose "Import-CertWebSite :          $ComputerName"
-        Invoke-Command -ComputerName $ComputerName -Argumentlist $WebSiteName,$Port,$IPAddress,$HostHeader,$Certificate -ScriptBlock {
+        Invoke-Command -ComputerName $ComputerName -Argumentlist $WebSiteName,$Port,$IPAddress,$HostHeader,$Certificate -Credential $Credential -ScriptBlock {
                 param (
                 [Parameter(Mandatory=$true)]
                 [String]$WebSiteName,
@@ -198,19 +200,26 @@ Function Import-CertWebSite {
                 [String]$HostHeader = '',
         
                 [Parameter(Mandatory=$true)]
-                [System.Security.Cryptography.X509Certificates.X509Certificate2]$Certificate 
+                [System.Security.Cryptography.X509Certificates.X509Certificate2]$Certificate
             )
 
             #----- Set verbose pref to what calling shell is set to
             $VerbosePreference=$Using:VerbosePreference
 
-            import-module webadministration -force
-                    
+            Write-Verbose "-----------WebsiteName = $WebSiteName"
 
-            if ( -Not ( Get-Webbinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader ) ) {
-                Write-Verbose "Import-CertWebSite : Binding to website"
-                New-WebBinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader
+            #if ( -Not (Get-Module WebAdministration) ) { import-module webadministration }                 
+
+            Try {
+                    if ( -Not ( Get-Webbinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader -ErrorAction Stop ) ) {
+                        Write-Verbose "Import-CertWebSite : Binding to website $WebSiteName"
+                        New-WebBinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader -ErrorAction Stop
+                    }
+                }
+                Catch {
+                    Throw "Import-CertWebsite : Error Binding to website.`n`n$($_.Exception.Message)"
             }
+            
             
             Write-Verbose "Import-CertWebsite : Assign Cert to Web Binding"
             # ----- Assign cert to web binding
