@@ -7,12 +7,8 @@ Function Get-Cert {
         Retrieves certificates from the certificate store
 
     .Description
-        Using .NET retrieves the certicates in the selected certificate store.  Either locall or on a remote computer.
+        Gets a list of certificates from a coputer.
 
-
-
-    .Links
-        http://blogs.technet.com/b/heyscriptingguy/archive/2011/02/16/use-powershell-and-net-to-find-expired-certificates.aspx
 #>
 
     [CmdletBinding()]
@@ -40,10 +36,13 @@ Function Get-Cert {
                 $VerbosePreference=$Using:VerbosePreference
 
                 Write-Verbose "Get-Cert : Getting Certificates from $CertRootStore\$CertStore"
-                $store = New-Object System.Security.Cryptography.X509Certificates.X509Store($CertStore,$CertRootStore)
-                $store.Open("ReadOnly")
-                Write-Output $store.Certificates
-                $Store.Close()
+
+                Write-Output (Get-ChildItem -Path "Cert:\$CertRootStore\$CertStore" )
+
+     #           $store = New-Object System.Security.Cryptography.X509Certificates.X509Store($CertStore,$CertRootStore)
+     #           $store.Open("ReadOnly")
+     #           Write-Output $store.Certificates
+     #           $Store.Close()
             }
         }
     }
@@ -211,7 +210,7 @@ Function Import-CertWebSite {
             #if ( -Not (Get-Module WebAdministration) ) { import-module webadministration }                 
 
             Try {
-                    if ( -Not ( Get-Webbinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader -ErrorAction Stop ) ) {
+                   if ( -Not ( Get-Webbinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader -ErrorAction Stop ) ) {
                         Write-Verbose "Import-CertWebSite : Binding to website $WebSiteName"
                         New-WebBinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader -ErrorAction Stop
                     }
@@ -224,11 +223,13 @@ Function Import-CertWebSite {
             Write-Verbose "Import-CertWebsite : Assign Cert to Web Binding"
             # ----- Assign cert to web binding
             if ( $IPAddress -eq '*' ) { $IPAddress = '0.0.0.0' }
-            $Certificate | New-Item "IIS:\SSLBindings\$IPAddress!$Port"
+            $IPAddress
+            $Port
+            "IIS:\SSLBindings\$IPAddress!$Port"
+            # ----- Regetting the Cert as there is strangeness with the cert passed in.  
+            Get-Item "Cert:\LocalMachine\My\$($Certificate.Thumbprint)" | New-Item "IIS:\SSLBindings\$IPAddress!$Port"
         }
-
     }
-
 }
 
 #---------------------------------------------------------------------------------------
