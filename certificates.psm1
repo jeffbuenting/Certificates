@@ -207,7 +207,9 @@ Function Import-CertWebSite {
 
             Write-Verbose "-----------WebsiteName = $WebSiteName"
 
-            #if ( -Not (Get-Module WebAdministration) ) { import-module webadministration }                 
+            #if ( -Not (Get-Module WebAdministration) ) { import-module webadministration }  
+            
+            get-website                
 
             Try {
                    if ( -Not ( Get-Webbinding -Name $WebSiteName -Protocol HTTPS -Port $Port -IPAddress $IPAddress -HostHeader $HostHeader -ErrorAction Stop ) ) {
