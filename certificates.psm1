@@ -228,8 +228,11 @@ Function Import-CertWebSite {
             $IPAddress
             $Port
             "IIS:\SSLBindings\$IPAddress!$Port"
-            # ----- Regetting the Cert as there is strangeness with the cert passed in.  
-            Get-Item "Cert:\LocalMachine\My\$($Certificate.Thumbprint)" | New-Item "IIS:\SSLBindings\$IPAddress!$Port"
+
+            if ( -Not ( Get-Item "IIS:\SSLBindings\$IPAddress!$Port" -ErrorAction SilentlyContinue ) ) {
+                    # ----- Regetting the Cert as there is strangeness with the cert passed in.  
+                    Get-Item "Cert:\LocalMachine\My\$($Certificate.Thumbprint)" | New-Item "IIS:\SSLBindings\$IPAddress!$Port"
+            }
         }
     }
 }
@@ -416,10 +419,13 @@ function Set-CertPrivateKeyPermissions {
         [string]$Permissions
     )
 
+  #  Enable-WSManCredSSP -Role "Client" -DelegateComputer $ComputerName
+  #  Invoke-Command -ComputerName $ComputerName -ScriptBlock {
+  #      Enable-WSMANCredSSP -Role Server -Force | Out-Null
+  #  }
+
     # ----- Even tho the full cert object is originally passed to the function.  Within the invoke-command I can't get the publick key.  So I only pass the thumbprint to the invoke-command block and then get the full cert object again.
-
-
-    Invoke-Command -ComputerName $ComputerName -ArgumentList $Certificate.Thumbprint, $serviceAccount, $Permissions -ScriptBlock {
+    Invoke-Command -ComputerName $ComputerName  -ArgumentList $Certificate.Thumbprint, $serviceAccount, $Permissions -ScriptBlock {
             param (
                 [String]$ThumbPrint, 
 
@@ -427,7 +433,7 @@ function Set-CertPrivateKeyPermissions {
 
                 [string]$Permissions
             )
-
+          
         # ----- Run Verbose if calling function is verbose
             $VerbosePreference=$Using:VerbosePreference
 
@@ -438,10 +444,13 @@ function Set-CertPrivateKeyPermissions {
 
         Write-Verbose "Set-CertPrivatekeyPermissions : Cert = $($Cert | Out-String)"
 
+        Write-Verbose "ServiceAccount = $ServiceAccount"
+
         # Specify the user, the permissions and the permission type
-        $perm = "$($serviceAccount)",$Permissions,"Allow"
+        $perm = $serviceAccount,$Permissions,"Allow"
 
         $accessRule = New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList $perm
+        Write-Verbose "AccessRule = $($AccessRule | FL * | Out-String )"
 
         # Location of the machine related keys
         $keyPath = $env:ProgramData + "\Microsoft\Crypto\RSA\MachineKeys\";
@@ -452,18 +461,27 @@ function Set-CertPrivateKeyPermissions {
     
         try {
                 # Get the current acl of the private key
-                $acl = Get-Acl -Path $keyFullPath;
+                $acl = Get-Acl -Path $keyFullPath
+                Write-verbose "ACL = $($ACL | FL * | Out-String )"
 
                 # Add the new ace to the acl of the private key
-                $acl.AddAccessRule($accessRule);
+                $acl.AddAccessRule($accessRule)
+                Write-Verbose "---------"
+                Write-Verbose "New ACL = $($ACL | FL * | Out-String)"
 
                 # Write back the new acl
-                Set-Acl -Path $keyFullPath -AclObject $acl;
+                Set-Acl -Path $keyFullPath -AclObject $acl -Verbose
+               
             }
             catch {
                 throw "Set-CertificatePermissions : $_"
         }
     }
+
+ #   Disable-WSManCredSSP -Role Client
+ #   Invoke-Command -ComputerName $ComputerName -ScriptBlock {
+ #        Disable-WSMANCredSSP -Role Server | Out-Null
+ #  }
 }
 
 Set-Alias -Name Import-CertWebSite -Value Bind-CertWebSite
