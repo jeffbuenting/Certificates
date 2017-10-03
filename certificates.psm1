@@ -484,4 +484,4 @@ function Set-CertPrivateKeyPermissions {
  #  }
 }
 
-Set-Alias -Name Import-CertWebSite -Value Bind-CertWebSite
+Set-Alias -Name Bind-CertWebSite -Value Import-CertWebSite
