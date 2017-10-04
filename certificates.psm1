@@ -9,6 +9,23 @@ Function Get-Cert {
     .Description
         Gets a list of certificates from a coputer.
 
+    .Parameter ComputerName
+        Name of the computer to get certificates
+
+    .Parameter CertRootStore
+        Certificate root Store
+
+    .Parameter CertRoot
+        Certificate Root
+
+    .Example
+        Return all computer certificates for ServerA
+
+        Get-Cert -ComputerName ServerA 
+
+    .Notes
+        Author : Jeff Buenting
+
 #>
 
     [CmdletBinding()]
@@ -55,6 +72,22 @@ Function Get-Cert {
 #---------------------------------------------------------------------------------------
 
 Function Get-CertWebSite {
+
+<#
+    .Synopsis
+        Finds Website Certificates
+
+    .Description
+        Finds Website Certificates
+
+    .Parameter WebSiteName
+        Name of the Website
+
+    .Parameter ComputerName
+        Computer name where the website resides.
+
+
+#>
 
     [CmdletBinding()]
     param (
@@ -484,4 +517,4 @@ function Set-CertPrivateKeyPermissions {
  #  }
 }
 
-Set-Alias -Name Bind-CertWebSite -Value Import-CertWebSite
+#Set-Alias -Name Bind-CertWebSite -Value Import-CertWebSite
