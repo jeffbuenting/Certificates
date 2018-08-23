@@ -86,6 +86,11 @@ Function Get-CertWebSite {
     .Parameter ComputerName
         Computer name where the website resides.
 
+    .Example
+
+    .Notes
+        Author : Jeff Buenting
+
 
 #>
 
