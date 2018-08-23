@@ -54,13 +54,21 @@ Describe "Certificates : Get-Cert" {
 
     Context Output {
         Mock -CommandName Invoke-Command -MockWith {
-            $Obj = New-Object 'System.Security.Cryptography.X509Certificates.X509Certificate2'
+            & $ScriptBlock
 
+           # $Obj = New-Object 'System.Security.Cryptography.X509Certificates.X509Certificate2'
+           # Return $Obj
+        }
+
+        Mock -CommandName Get-ChildItem -MockWith {
+            $Obj = New-Object 'System.Security.Cryptography.X509Certificates.X509Certificate2'
             Return $Obj
         }
 
         It "Outputs a certificate object" {
-            Get-Cert | Should beoftype 'System.Security.Cryptography.X509Certificates.X509Certificate2'
+            Get-Cert #| Should beoftype 'System.Security.Cryptography.X509Certificates.X509Certificate2'
+            Assert-MockCalled get-childitem -Scope it
+
         }
     }
 }

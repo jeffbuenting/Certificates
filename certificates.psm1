@@ -462,7 +462,8 @@ function Set-CertPrivateKeyPermissions {
             param (
                 [String]$ThumbPrint, 
 
-                [string]$serviceAccount,
+                [Alias('ServiceAccount')]
+                [String]$serviceAccountName,
 
                 [string]$Permissions
             )
@@ -477,10 +478,10 @@ function Set-CertPrivateKeyPermissions {
 
         Write-Verbose "Set-CertPrivatekeyPermissions : Cert = $($Cert | Out-String)"
 
-        Write-Verbose "ServiceAccount = $ServiceAccount"
+        Write-Verbose "ServiceAccount = $ServiceAccountName"
 
         # Specify the user, the permissions and the permission type
-        $perm = $serviceAccount,$Permissions,"Allow"
+        $perm = $serviceAccountName,$Permissions,"Allow"
 
         $accessRule = New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList $perm
         Write-Verbose "AccessRule = $($AccessRule | FL * | Out-String )"
