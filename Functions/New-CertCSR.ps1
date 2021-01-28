@@ -7,6 +7,11 @@
     .DESCRIPTION
         Can be either from inf file or parameters (which will then create the INF file).
 
+    .LINK
+        https://github.com/chrisdee/Scripts/blob/master/PowerShell/Working/certificates/GenerateCertificateSigningRequest(CSR).ps1
+        https://dille.name/blog/2016/11/08/using-a-microsoft-ca-to-secure-docker/
+        https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/certreq_1#syntax
+
 #>
 
     [CmdletBinding(DefaultParameterSetName = 'INF')]
@@ -15,6 +20,7 @@
         [String]$INF,
 
         [Parameter ( ParameterSetName = 'FromParameters',Mandatory = $True  )]
+        [Parameter ( ParameterSetName = 'OpenSSL',Mandatory = $True )]
         [String]$FQDN,
 
         [Parameter ( ParameterSetName = 'FromParameters' )]
@@ -34,45 +40,51 @@
 
         [Parameter ( ParameterSetName = 'INF',Mandatory = $True  ) ]
         [Parameter ( ParameterSetName = 'FromParameters',Mandatory = $True  )]
-        [String]$CSRFile
+        [Parameter ( ParameterSetName = 'OpenSSL',Mandatory = $True )]
+        [String]$CSRFile,
+
+        [Parameter ( ParameterSetName = 'OpenSSL',Mandatory = $True )]
+        [Switch]$OpenSSL
 
     )
 
-    if ( $PSCmdlet.ParameterSetName -eq 'FromParameters' ) {
-        Write-Verbose "Creating CSR from Parameters"
+    switch ( $PSCmdlet.ParameterSetName ) {
 
-        # ----- Build the subject 
-        $Subject = "CN=$FQDN"
+        'FromParameters' {
+            Write-Verbose "Creating CSR from Parameters"
+
+            # ----- Build the subject 
+            $Subject = "CN=$FQDN"
         
-        if ( $Country ) {
-            $Subject += ",C=$Country"
-        }
-
-        if ( $Location ) {
-            $Subject += ",L=$Location"
-        }
-
-        if ( $State ) {
-            $Subject += ",S=$State"
-        }
-
-        if ( $Organization ) {
-            $Subject += ",O=$Organization"
-        }
-
-        # ----- SAN
-        if ($SubjectAlternativeNames ) {
-            $SAN = @()
-            $SubjectAlternativeNames -split ',' | foreach {
-                $SAN += "_continue_ = ""DNS=$_&"""
+            if ( $Country ) {
+                $Subject += ",C=$Country"
             }
-        }
-        Else {
-            $SAN = "_continue_ = ""DNS=$FQDN&"""
-        }
 
-        # ----- build CSR text
-        $RequestINF = @"
+            if ( $Location ) {
+                $Subject += ",L=$Location"
+            }
+
+            if ( $State ) {
+                $Subject += ",S=$State"
+            }
+
+            if ( $Organization ) {
+                $Subject += ",O=$Organization"
+            }
+
+            # ----- SAN
+            if ($SubjectAlternativeNames ) {
+                $SAN = @()
+                $SubjectAlternativeNames -split ',' | foreach {
+                    $SAN += "_continue_ = ""DNS=$_&"""
+                }
+            }
+            Else {
+                $SAN = "_continue_ = ""DNS=$FQDN&"""
+            }
+
+            # ----- build CSR text
+            $RequestINF = @"
 [Version] 
 Signature="`$Windows NT`$" 
 
@@ -92,21 +104,29 @@ Subject = "$Subject"
 $SAN
 "@
     
-    Write-Verbose "`n$RequestINF"
+            Write-Verbose "`n$RequestINF"
 
-    $INF = "$(($CSRFile | Split-Path -Parent))\$($FQDN)_CSR.inf"
+            $INF = "$(($CSRFile | Split-Path -Parent))\$($FQDN)_CSR.inf"
     
-    Set-Content -Value $RequestINF -Path $INF
+            Set-Content -Value $RequestINF -Path $INF
 
+            Write-Verbose "INF file = $INF"
+
+            # ----- Create the request
+            & certreq -new $INF $CSRFile | write-Verbose
+        }
+
+        'INF'{
+            Write-Verbose "Creating CSR from INF"
+
+            Write-Verbose "INF file = $INF"
+
+            # ----- Create the request
+            & certreq -new $INF $CSRFile | write-Verbose
+        }
+
+        'OpenSSL' {
+            
+        }
     }
-
-    if ( $PSCmdlet.ParameterSetName -eq 'INF' ) {
-        Write-Verbose "Creating CSR from INF"
-    }
-
-
-    Write-Verbose "INF file = $INF"
-
-    # ----- Create the request
-    & certreq -new $INF $CSRFile | write-Verbose
 }
