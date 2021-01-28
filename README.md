@@ -6,7 +6,7 @@ The Microsoft Windows Certificate powershell module (PKI) is missing some functi
 
 ### Master
 
-Version: 1.6.1
+Version: 1.6.9
 
 [![Build status](https://ci.appveyor.com/api/projects/status/0upkoy1odny5totn/branch/master?svg=true)](https://ci.appveyor.com/project/jeffbuenting/certificates/branch/master)
 
