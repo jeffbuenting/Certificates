@@ -4,8 +4,13 @@
 
 The Microsoft Windows Certificate powershell module (PKI) is missing some functinality.  This module contains the functions that I have needed from time to time to automate various software installs.
 
-## Version
- - 1.6.1
+### Master
+
+Version: 1.6.1
+
+[![Build status](https://ci.appveyor.com/api/projects/status/0upkoy1odny5totn/branch/master?svg=true)](https://ci.appveyor.com/project/jeffbuenting/certificates/branch/master)
+
+This is the branch containing the latest stable version.
 
 ## Functions
 
