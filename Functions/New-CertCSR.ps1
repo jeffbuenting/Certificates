@@ -108,5 +108,5 @@ $SAN
     Write-Verbose "INF file = $INF"
 
     # ----- Create the request
-    & certreq -new $INF $CSRFile
+    & certreq -new $INF $CSRFile | write-Verbose
 }
