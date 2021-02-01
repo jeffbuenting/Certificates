@@ -161,16 +161,16 @@ $SAN
 
             $SANCNF | Out-file "$($CSRFile | Split-Path -Parent)\SAN.cnf"
 
-            # ----- OPENSSL does not outputs to the error stream and PS ISE does not like that so it thows an error.  Start-Process seems to fix tha tissue.
+            # ----- OPENSSL does not outputs to the error stream and PS ISE does not like that so it thows an error.  
             # https://stackoverflow.com/questions/31449220/powershell-ise-wrongly-interprets-openssl-exe-normal-output-as-error#:~:text=Powershell%20interprets%20any%20dump%20into,Powershell%20as%20an%20actual%20error.
 
             # ----- Need to creat a key
             Write-Verbose "Private key..."
-            Start-Process -filePath "$($OSSLPath)openssl.exe" -ArgumentList "genrsa -out $($CSRFile.Replace('csr','key')) 4096" -NoNewWindow
+            Invoke-Process -filePath "$($OSSLPath)openssl.exe" -ArgumentList "genrsa -out $($CSRFile.Replace('csr','key')) 4096" 
 
             # ----- Generate CSR
             Write-Verbose "CSR File..."
-            Start-Process -FilePath "$($OSSLPath)openssl.exe" -ArgumentList "req -subj '/CN=$FQDN' -sha256 -new -key $($CSRFile.Replace('csr','key')) -out $CSRFile" -NoNewWindow
+            INvoke-Process -FilePath "$($OSSLPath)openssl.exe" -ArgumentList "req -subj ""/CN=$FQDN"" -sha256 -new -key $($CSRFile.Replace('csr','key')) -out $CSRFile" 
         }
     }
 }
