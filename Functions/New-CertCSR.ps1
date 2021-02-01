@@ -37,12 +37,16 @@
         [String]$Organization,
 
         [Parameter ( ParameterSetName = 'FromParameters' )]
+        [Parameter ( ParameterSetName = 'OpenSSL' )]
         [String[]]$SubjectAlternativeName,
 
         [Parameter ( ParameterSetName = 'INF',Mandatory = $True  ) ]
         [Parameter ( ParameterSetName = 'FromParameters',Mandatory = $True  )]
         [Parameter ( ParameterSetName = 'OpenSSL',Mandatory = $True )]
-        [String]$CSRFile
+        [String]$CSRFile,
+
+        [Parameter ( ParameterSetName = 'OpenSSL',Mandatory = $True )]
+        [switch]$OpenSSL
 
     )
 
@@ -125,6 +129,8 @@ $SAN
 
         'OpenSSL' {
             # ----- This section relys on third party openssl.exe 
+            Write-Verbose "Creating CSR with OpenSSL"
+
             if ( Get-Command openssl.exe -ErrorAction SilentlyContinue ) {
                 Write-Verbose "OpenSSL.exe is installed and in the windows path"
                 $OSSLPath = ''
@@ -140,30 +146,31 @@ $SAN
 
             # ----- Generate Config file for OpenSSL
             # https://www.switch.ch/pki/manage/request/csr-openssl/
-            $CSRCNF = @()
-            $CSRCNF += "[ req ]"
-            $CSRCNF += "default_bits = 2048"
-            $CSRCNF += "default_md = sha256"
-            $CSRCNF += "prompt = no"
-            $CSRCNF += "encrypt_key = no"
-            $CSRCNF += "distinguished_name = dn"
-            $CSRCNF += "req_extensions = req_ext"
-            $CSRCNF += " "
-            $CSRCNF += "[ dn ]"
-            $CSRCNF += "C = $Country"
-            $CSRCNF += "O = $Organization"
-            $CSRCNF += "CN = $FQDN"
-            $CSRCNF += " "
-            $CSRCNF += "[ req_ext ]"
-            $CSRCNF += "subjectAltName = DNS:$FQDN, DNS:$($SubjectAlternativeNames -join ', DNS:')"
+            Write-Verbose "Generating CNF file (config file similar to info for certreq)"
 
-            $CSRCNF | Out-file ($CSRFile | Split-Path -Parent)\CSR.cnf
+            $SANCNF = @()
+            $SANCNF += "[ alt_names ]"
+            if ( $SubjectAlternativeName ) {
+                $SANCNF += "subjectAltName = DNS:$FQDN, DNS:$($SubjectAlternativeNames -join ', DNS:')"
+            }
+            Else {
+                $SANCNF += "subjectAltName = DNS:$FQDN"
+            }
+
+            #write-Verbose "CSRFile = $CSRFile"
+
+            $SANCNF | Out-file "$($CSRFile | Split-Path -Parent)\SAN.cnf"
+
+            # ----- OPENSSL does not outputs to the error stream and PS ISE does not like that so it thows an error.  Start-Process seems to fix tha tissue.
+            # https://stackoverflow.com/questions/31449220/powershell-ise-wrongly-interprets-openssl-exe-normal-output-as-error#:~:text=Powershell%20interprets%20any%20dump%20into,Powershell%20as%20an%20actual%20error.
 
             # ----- Need to creat a key
-            & "$($OpenSSL)openssl.exe" genrsa -out $CSRFile.Replace('csr','key') 4096
+            Write-Verbose "Private key..."
+            Start-Process -filePath "$($OSSLPath)openssl.exe" -ArgumentList "genrsa -out $($CSRFile.Replace('csr','key')) 4096" -NoNewWindow
 
             # ----- Generate CSR
-            & "$($OpenSSL)openssl.exe" req -subj $FQDN -sha256 -new -key $CSRFile.Replace('csr','key') -config ($CSRFile | Split-Path -Parent)\CSR.cnf -out $CSRFile
+            Write-Verbose "CSR File..."
+            Start-Process -FilePath "$($OSSLPath)openssl.exe" -ArgumentList "req -subj '/CN=$FQDN' -sha256 -new -key $($CSRFile.Replace('csr','key')) -out $CSRFile" -NoNewWindow
         }
     }
 }
