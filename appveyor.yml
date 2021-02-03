@@ -9,12 +9,12 @@ environment:
   access_token:
     secure: EJ2HHF0klBsYS3WlZWIvcc88u5/gixju8bcOR4d13x6Fh+BA7UNU89/NPkHYP6JN
 
-# branches to build
-branches:
-  # whitelist
-  only:
-  #  - master
-    - dev
+## branches to build
+#branches:
+#  # whitelist
+#  only:
+#  #  - master
+#    - dev
 
 # build for tags and non tags
 skip_tags: false
@@ -33,17 +33,24 @@ test_script:
   
   
 on_success:
-  # ----- Enable Git Credential Store and add token
-  - git config --global credential.helper store
-  - git config --global user.email "jeffbuenting@gmail.com"
-  - git config --global user.name "jeffbuenting"
-    
 
-  - ps: $env:APPVEYOR_REPO_BRANCH
-  - ps: Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
-  - ps: $Readme = Get-Content readme.md 
-  - ps: if ( $env:APPVEYOR_REPO_BRANCH -eq 'master' ) {
-  - ps:   Write-Output "Master Branch"
+for:
+
+-
+  branches:
+    only:
+      - master 
+      
+  on_success:
+    # ----- Enable Git Credential Store and add token
+    - git config --global credential.helper store
+    - git config --global user.email "jeffbuenting@gmail.com"
+    - git config --global user.name "jeffbuenting" 
+    
+    - ps: $env:APPVEYOR_REPO_BRANCH
+    - ps: Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
+    - ps: $Readme = Get-Content readme.md 
+    - ps:   Write-Output "Master Branch"
 #  - ps:   # ----- Get Dev version
 #  - ps:   $DevVersion = $Readme | Select-String -Pattern "Dev Version: (\d*\.\d*\.\d*)" | foreach { $_.Matches.Groups[1].Value } 
 #  - ps:   # ----- Update Readme.md Version number
@@ -51,13 +58,19 @@ on_success:
 #  - ps:   # ----- Update the module manifests version
 #  - ps:   Update-ModuleManifest -Path certificates.psd1 -ModuleVersion $DevVersion
 #  - ps: }
-  - ps: else {
-  -ps:    Write-Output "Dev Branch"
+
+  branches:
+    only:
+      - dev
+      
+  on_success:
+
+    -ps:    Write-Output "Dev Branch"
 #  - ps:   # ----- Update Readme.md Version number
 #  - ps:   $Readme -replace "Dev Version: \d*\.\d*\.\d*","Dev Version: $env:APPVEYOR_BUILD_VERSION" | Set-Content README.md
 #  - ps:   # ----- Update the module manifests version
 #  - ps:   Update-ModuleManifest -Path certificates.psd1 -ModuleVersion $env:APPVEYOR_BUILD_VERSION
-  - ps: }
+
 #
 #  # ----- Push back to Github
 #  - git checkout %APPVEYOR_REPO_BRANCH%
