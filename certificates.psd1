@@ -54,7 +54,7 @@ Copyright = '(c) 2016 Jeff.Buenting. All rights reserved.'
 #RequiredAssemblies = @('mscorlib.dll')
 
 # Script files (.ps1) that are run in the caller's environment prior to importing this module.
- ScriptsToProcess = "$PSScriptRoot\Functions\Helper\Install-InvokeProcess.ps1"
+ ScriptsToProcess = ".\Functions\Helper\Install-InvokeProcess.ps1"
 
 # Type files (.ps1xml) to be loaded when importing this module
 # TypesToProcess = @()
