@@ -5,6 +5,11 @@
         Submits CSR to certificate authority.
 
     .LINK
+        https://help.teradici.com/s/article/1147
+
+        Convert Cert to PEM.  CER is the same as PEM (has BEGIN and END)
+
+    .LINK
         https://knowledge.digicert.com/generalinformation/INFO2824.html
 #>
 
