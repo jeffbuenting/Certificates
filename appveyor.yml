@@ -13,7 +13,7 @@ environment:
 branches:
   # whitelist
   only:
-    - master
+  #  - master
     - dev
 
 # build for tags and non tags
