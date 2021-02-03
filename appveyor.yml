@@ -1,16 +1,19 @@
+environment:
+  access_token:
+    secure: EJ2HHF0klBsYS3WlZWIvcc88u5/gixju8bcOR4d13x6Fh+BA7UNU89/NPkHYP6JN
 
-for:
-
--
-  branches:
-    only:
-      - master 
-      
-- ps:   Write-Output "Master Branch"
-
--
-  branches:
-    only:
-      - dev
-      
-- ps:   Write-Output "Dev Branch"
+#for:
+#
+#-
+#  branches:
+#    only:
+#      - master 
+#      
+#- ps:   Write-Output "Master Branch"
+#
+#-
+#  branches:
+#    only:
+#      - dev
+#      
+#- ps:   Write-Output "Dev Branch"
