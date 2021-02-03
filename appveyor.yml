@@ -14,7 +14,7 @@ branches:
   # whitelist
   only:
     - master
-  #  - dev
+    - dev
 
     
 install:
