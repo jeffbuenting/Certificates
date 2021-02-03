@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="5" errors="0" failures="0" not-run="0" inconclusive="4" ignored="0" skipped="0" invalid="0" date="2021-01-28" time="13:34:25">
+  <environment clr-version="4.0.30319.42000" user-domain="APPVYR-WIN" cwd="C:\projects\certificates" platform="Microsoft Windows Server 2012 R2 Datacenter|C:\windows|\Device\Harddisk0\Partition5" machine-name="APPVYR-WIN" nunit-version="2.5.8.0" os-version="6.3.9600" user="appveyor" />
+  <culture-info current-culture="en-US" current-uiculture="en-US" />
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Inconclusive" success="True" time="1.7168" asserts="0" description="Pester">
+    <results>
+      <test-suite type="TestFixture" name="C:\projects\certificates\Tests\certificates.Tests.ps1" executed="True" result="Success" success="True" time="0.9339" asserts="0" description="C:\projects\certificates\Tests\certificates.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="certificates : Module Tests" executed="True" result="Success" success="True" time="0.7454" asserts="0" description="certificates : Module Tests">
+            <results>
+              <test-case description="should have a test for each function" name="certificates : Module Tests.should have a test for each function" time="0.1848" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\projects\certificates\Tests\Get-Cert.tests.ps1" executed="True" result="Inconclusive" success="True" time="0.5959" asserts="0" description="C:\projects\certificates\Tests\Get-Cert.tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="certificates  : Get-Cert" executed="True" result="Inconclusive" success="True" time="0.5751" asserts="0" description="certificates  : Get-Cert">
+            <results>
+              <test-suite type="TestFixture" name="Output" executed="True" result="Inconclusive" success="True" time="0.5428" asserts="0" description="Output">
+                <results>
+                  <test-case description="Outputs a certificate object" name="certificates  : Get-Cert.Output.Outputs a certificate object" time="0" asserts="0" success="True" result="Inconclusive" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\projects\certificates\Tests\Get-CertPrivateKeyPermissions.tests.ps1" executed="True" result="Success" success="True" time="0.0242" asserts="0" description="C:\projects\certificates\Tests\Get-CertPrivateKeyPermissions.tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="certificates  : Get-CertPrivateKeyPermissions" executed="True" result="Success" success="True" time="0.0176" asserts="0" description="certificates  : Get-CertPrivateKeyPermissions">
+            <results />
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\projects\certificates\Tests\Get-CertWebSite.Tests.ps1" executed="True" result="Inconclusive" success="True" time="0.0603" asserts="0" description="C:\projects\certificates\Tests\Get-CertWebSite.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="certificates : Get-CertWebSite" executed="True" result="Inconclusive" success="True" time="0.0535" asserts="0" description="certificates : Get-CertWebSite">
+            <results>
+              <test-suite type="TestFixture" name="Execution" executed="True" result="Inconclusive" success="True" time="0.0188" asserts="0" description="Execution">
+                <results>
+                  <test-case description="Should return all website certificates if no website name is specified" name="certificates : Get-CertWebSite.Execution.Should return all website certificates if no website name is specified" time="0" asserts="0" success="True" result="Inconclusive" executed="True" />
+                  <test-case description="Should return only the specified website certs" name="certificates : Get-CertWebSite.Execution.Should return only the specified website certs" time="0" asserts="0" success="True" result="Inconclusive" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Output" executed="True" result="Inconclusive" success="True" time="0.0136" asserts="0" description="Output">
+                <results>
+                  <test-case description="Should return custom object" name="certificates : Get-CertWebSite.Output.Should return custom object" time="0" asserts="0" success="True" result="Inconclusive" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\projects\certificates\Tests\Import-CertWebSite.Tests.ps1" executed="True" result="Success" success="True" time="0.0573" asserts="0" description="C:\projects\certificates\Tests\Import-CertWebSite.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="certificates  : Import-CertWebSite" executed="True" result="Success" success="True" time="0.024" asserts="0" description="certificates  : Import-CertWebSite">
+            <results />
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\projects\certificates\Tests\Remove-CertWebSite.Tests.ps1" executed="True" result="Success" success="True" time="0.0233" asserts="0" description="C:\projects\certificates\Tests\Remove-CertWebSite.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="certificates  : Remove-CertWebSite" executed="True" result="Success" success="True" time="0.0146" asserts="0" description="certificates  : Remove-CertWebSite">
+            <results />
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\projects\certificates\Tests\Set-CertPrivateKeyPermissions.tests.ps1" executed="True" result="Success" success="True" time="0.0219" asserts="0" description="C:\projects\certificates\Tests\Set-CertPrivateKeyPermissions.tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="certificates  : Set-CertPrivateKeyPermissions" executed="True" result="Success" success="True" time="0.0151" asserts="0" description="certificates  : Set-CertPrivateKeyPermissions">
+            <results />
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
