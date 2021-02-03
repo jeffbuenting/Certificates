@@ -14,6 +14,7 @@ branches:
   # whitelist
   only:
     - master
+    - dev
 
     
 install:
@@ -31,21 +32,31 @@ test_script:
 on_success:
   # ----- Enable Git Credential Store and add token
   - git config --global credential.helper store
-  
-  # ----- Update Readme.md Version number
-  - ps: Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
   - git config --global user.email "jeffbuenting@gmail.com"
   - git config --global user.name "jeffbuenting"
-  - ps: $Readme = Get-Content readme.md
-  - ps: '$Readme -replace "Version: \d*\.\d*\.\d*","Version: $env:APPVEYOR_BUILD_VERSION" | Set-Content README.md'
-  
-  # ----- Update the module manifests version
-  - ps: Update-ModuleManifest -Path certificates.psd1 -ModuleVersion $env:APPVEYOR_BUILD_VERSION
-  
+    
+  - ps: 
+      Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
+      $Readme = Get-Content readme.md
+      if ( $env:APPVEYOR_REPO_BRANCH -eq 'master' ) {
+        # ----- Get Dev version
+        $DevVersion = $Readme | Select-String -Pattern "Dev Version: (\d*\.\d*\.\d*)" | foreach { $_.Matches.Groups[1].Value } 
+        # ----- Update Readme.md Version number
+        $Readme -replace "Master Version: \d*\.\d*\.\d*","Master Version: $DevVersion" | Set-Content README.md
+        # ----- Update the module manifests version
+        Update-ModuleManifest -Path certificates.psd1 -ModuleVersion $DevVersion
+      }
+      else {
+        # ----- Update Readme.md Version number
+        $Readme -replace "Dev Version: \d*\.\d*\.\d*","Dev Version: $env:APPVEYOR_BUILD_VERSION" | Set-Content README.md
+        # ----- Update the module manifests version
+        Update-ModuleManifest -Path certificates.psd1 -ModuleVersion $env:APPVEYOR_BUILD_VERSION
+      }
+
   # ----- Push back to Github
-  - git checkout master
+  - git checkout %APPVEYOR_REPO_BRANCH%
   - git add --all
   - git status
   - git commit -s -m "Update Readme and Manifest Version"
-  - git push origin master
+  - git push origin %APPVEYOR_REPO_BRANCH%
   
