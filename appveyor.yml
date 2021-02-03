@@ -41,6 +41,7 @@ on_success:
 
   - ps: Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
   - ps: $Readme = Get-Content readme.md
+  - ps: $env:APPVEYOR_REPO_BRANCH 
   - ps: if ( $env:APPVEYOR_REPO_BRANCH -eq 'master' ) {
   - ps:   # ----- Get Dev version
   - ps:   $DevVersion = $Readme | Select-String -Pattern "Dev Version: (\d*\.\d*\.\d*)" | foreach { $_.Matches.Groups[1].Value } 
