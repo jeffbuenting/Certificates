@@ -4,16 +4,14 @@ environment:
 
 build: false
 
--
-  branches:
+- branches:
     only:
-      - master 
+        - master 
       
-  - ps:   Write-Output "Master Branch"
+- ps:   Write-Output "Master Branch"
 
--
-  branches:
+- branches:
     only:
-      - dev
+        - dev
       
-  - ps:   Write-Output "Dev Branch"
+- ps:   Write-Output "Dev Branch"
