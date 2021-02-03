@@ -26,21 +26,23 @@ install:
 
 build: false
 
-#test_script:
-#  - ps: $TestResult = Invoke-Pester -Path ".\Tests" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
-#  - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults.xml))
-#  - ps: if ($TestResult.FailedCount -gt 0) { throw "$($Test.FailedCount) tests failed."}
-#  
-#  
-#on_success:
-#  # ----- Enable Git Credential Store and add token
-#  - git config --global credential.helper store
-#  - git config --global user.email "jeffbuenting@gmail.com"
-#  - git config --global user.name "jeffbuenting"
-#    
-#  - ps: 
-#      Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
-#      $Readme = Get-Content readme.md
+test_script:
+  - ps: $TestResult = Invoke-Pester -Path ".\Tests" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
+  - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults.xml))
+  - ps: if ($TestResult.FailedCount -gt 0) { throw "$($Test.FailedCount) tests failed."}
+  
+  
+on_success:
+  # ----- Enable Git Credential Store and add token
+  - git config --global credential.helper store
+  - git config --global user.email "jeffbuenting@gmail.com"
+  - git config --global user.name "jeffbuenting"
+    
+  - ps: 
+      Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
+      $Readme = Get-Content readme.md
+      $env:APPVEYOR_REPO_BRANCH
+      
 #      if ( $env:APPVEYOR_REPO_BRANCH -eq 'master' ) {
 #        # ----- Get Dev version
 #        $DevVersion = $Readme | Select-String -Pattern "Dev Version: (\d*\.\d*\.\d*)" | foreach { $_.Matches.Groups[1].Value } 
