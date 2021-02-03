@@ -16,6 +16,9 @@ branches:
     - master
     - dev
 
+# build for tags and non tags
+skip_tags: false
+skip_non_tags: false
     
 install:
   - choco install pester
