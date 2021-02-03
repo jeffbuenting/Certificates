@@ -22,9 +22,9 @@ Describe "$ModuleName : Module Tests" {
 
     $Module = Get-module -Name $ModuleName -Verbose
 
-    $testFile = Get-ChildItem "$($Module.ModuleBase)\tests" -Filter '*.Tests.ps1' -File -verbose
+    $testFile = Get-ChildItem "$($Module.ModuleBase)\tests" -Filter '*.Tests.ps1' -File -verbose | where { $_.Name.ToLower() -ne ("$ModuleName.Tests.ps1").ToLower() }
 
-    $testNames = Select-String -Path $testFile.FullName -Pattern 'describe\s[^\$](.+)?\s+{' | ForEach-Object {
+    $testNames = Select-String -Path $testFile.FullName -Pattern 'describe\s[^\$].+?\s+:?\s+(.+)?\s+{' | ForEach-Object {
         [System.Management.Automation.PSParser]::Tokenize($_.Matches.Groups[1].Value, [ref]$null).Content
     }
 
