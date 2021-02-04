@@ -22,10 +22,11 @@ jobs:
       shell: pwsh
       run: 
         $ModulePath = Split-Path $PSSCriptRoot -Parent
-        $modulePath
-        $ModuleName = $ModulePath | Split-Path -Leaf
-        $Module = Get-module -Name $ModuleName -Verbose
+        Write-Output "ModulePath - $modulePath"
         
-        Get-ChildItem "$($Module.ModuleBase)\tests" -Filter '*.Tests.ps1' -File -verbose | where { $_.Name.ToLower() -ne ("$ModuleName.Tests.ps1").ToLower() }
+        #$ModuleName = $ModulePath | Split-Path -Leaf
+        #$Module = Get-module -Name $ModuleName -Verbose
+        
+        #Get-ChildItem "$($Module.ModuleBase)\tests" -Filter '*.Tests.ps1' -File -verbose | where { $_.Name.ToLower() -ne ("$ModuleName.Tests.ps1").ToLower() }
         #$TestResult = Invoke-Pester -Path ".\Tests" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
         #if ($TestResult.FailedCount -gt 0) { throw "$($Test.FailedCount) tests failed."}
