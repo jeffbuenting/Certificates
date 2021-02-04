@@ -21,7 +21,7 @@ jobs:
     - name: Perform a Pester test from the Tests.ps1 file
       shell: pwsh
       run: 
-        ($env:GITHUB_REPOSITORY -split '/')[1]
+        Get-Module -ListAvailable
         #$Module = Get-Module ($env:GITHUB_REPOSITORY -split '/')[1];
         #$Module | FL *
         
