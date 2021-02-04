@@ -21,7 +21,7 @@ jobs:
     - name: Perform a Pester test from the Tests.ps1 file
       shell: pwsh
       run: 
-        $ModulePath = Split-Path $PSSCriptRoot -Parent
+        $ModulePath = Split-Path . -Parent
         Write-Output "ModulePath - $modulePath"
         
         #$ModuleName = $ModulePath | Split-Path -Leaf
