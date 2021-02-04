@@ -22,6 +22,7 @@ jobs:
       shell: pwsh
       run: 
         $ModulePath = Split-Path $PSSCriptRoot -Parent
+        $modulePath
         $ModuleName = $ModulePath | Split-Path -Leaf
         $Module = Get-module -Name $ModuleName -Verbose
         
