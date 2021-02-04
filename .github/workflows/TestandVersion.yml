@@ -19,9 +19,10 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v2
       
-    - name: Install Script Invoke-Process.ps1
-      shell: pwsh
-      run: Install-Script 'Invoke-Process' -Scope AllUsers -Confirm:$false -Force
+    - name: PowerShell script Invoke-Process Install
+      uses: Amadevus/pwsh-script@v2.0.0
+      with:
+        script: Functions/Helper/Install-InvokeProcess.ps1
       
     - name: pester-tests-report
       uses: zyborg/pester-tests-report@v1.3.3
