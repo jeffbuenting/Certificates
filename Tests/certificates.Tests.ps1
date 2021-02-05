@@ -30,9 +30,8 @@ Describe "$ModuleName : Module Tests" {
         }
 
         $moduleCommandNames = (Get-Command -Module $ModuleName | where CommandType -ne Alias)
-
-        write-host "command = $($ModuleCommandNames | out-string)"
-        Compare-Object $ModuleCommandNames $testNames | where { $_.SideIndicator -eq '<=' } | select inputobject | should beNullOrEmpty
+        
+        Compare-Object $ModuleCommandNames $testNames | where { $_.SideIndicator -eq '<=' } | select inputobject | should -beNullOrEmpty
     }
 }
 
