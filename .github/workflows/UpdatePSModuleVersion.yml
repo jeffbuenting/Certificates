@@ -32,6 +32,8 @@ jobs:
       - name: Update Version
         shell: pwsh
         run:
+        id: 
+          Write-Output "CurrentVersion = $CurrentVertion";
           $SplitVer = $CurrentVersion -split '.';
           $NewVer = "$SplitVer[0].$SplitVer[1].$([int]SplitVer[2] + 1)"
           
