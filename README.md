@@ -6,42 +6,10 @@ The Microsoft Windows Certificate powershell module (PKI) is missing some functi
 
 ---
 
-[![GitHub Workflow - CI](https://github.com/jeffbuenting/Certificates/workflows/CI/badge.svg)](https://github.com/jeffbuenting/Certificates/actions?workflow=CI)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/jeffbuenting/Certificates)](https://github.com/jeffbuenting/Certificates/releases/latest)
+[![GitHub Workflow - UnitTest](https://github.com/jeffbuenting/Certificates/workflows/CI/badge.svg)](https://github.com/jeffbuenting/Certificates/actions?workflow='UnitTest')
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/jeffbuenting/Certificates)](x.x.x)
 
 ---
 
-### Branch Status
 
-Master Version: 1.6.9
-
-[![Build status](https://ci.appveyor.com/api/projects/status/0upkoy1odny5totn/branch/master?svg=true)](https://ci.appveyor.com/project/jeffbuenting/certificates/branch/master)
-
-Dev Version: 1.6.9
-
-[![Build status](https://ci.appveyor.com/api/projects/status/0upkoy1odny5totn/branch/master?svg=true)](https://ci.appveyor.com/project/jeffbuenting/certificates/branch/dev)
-
-This is the branch containing the latest stable version.
-
-## Functions
-
-**Get-Cert**                              
-  - Retrieves certificates from the cert store.
-  
-**Import-Cert**
-
-**Get-CertWebsite**
-  - Retrieves the certificate bound to a website.
-  
-**Import-CertWebSite**
-  - Binds a certificate to a website
-  
-**Remove-CertWebSite**
-  - Removes a certificate binding from a website
-  
-**Get-CertPrivateKeyPermissions**
-  - Retrieves the permissions on a certificate's Private Key
-  
-**Set-CertPrivateKeyPermissions**
-  - Sets private key permissions on certificates
 
