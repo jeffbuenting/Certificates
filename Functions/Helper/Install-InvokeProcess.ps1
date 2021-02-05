@@ -4,13 +4,11 @@
 
 Write-Verbose "Checking for Invoke-Process..."
 
-if ( -Not ( Test-Path -Path 'C:\Program Files\WindowsPowerShell\Scripts\Invoke-Process.ps1' ) ) {
+if ( -Not ( Get-InstalledScript ) ) {
     Write-Verbose "Installing Invoke-Process"
 
     Install-Script 'Invoke-Process' -Scope AllUsers -Confirm:$false -Force
 }
 Write-Verbose "Dot Sourcing Invoke-Process"
 
-Get-InstalledScript -Name Invoke-Process | fl *
-
-. 'C:\Program Files\WindowsPowerShell\Scripts\Invoke-Process.ps1'
+. "$((Get-InstalledScript -Name Invoke-Process).InstalledLocation)\Invoke-Process.ps1"
