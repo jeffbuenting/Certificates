@@ -2,14 +2,14 @@
 name: UpdatePSModuleVersion
 
 on:
-  push:
-    branches: 
-      'jeffbuenting-patch-1'
-      
   workflow_run:
     workflows: "UnitTest"
     types:
       - completed
+    branches: 
+      'jeffbuenting-patch-1'
+      
+
 
   workflow_dispatch:
 
