@@ -15,7 +15,7 @@ on:
 
 jobs:
   # ----- Only run if UnitTest workflow completed successfully
-  if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  if: ${{ github.event.workflow_run.conclusion }} == 'success'
 
   build:
     runs-on: ubuntu-latest
