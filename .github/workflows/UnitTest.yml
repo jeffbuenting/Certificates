@@ -39,4 +39,4 @@ jobs:
         uses: actions/checkout@v2
         
       - name: Update Module Version
-        uses: jeffbuenting/UpdateModuleVersion@main
+        uses: jeffbuenting/UpdateModuleVersion@dev
