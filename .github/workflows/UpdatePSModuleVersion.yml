@@ -23,23 +23,25 @@ jobs:
   
     steps:
       - uses: actions/checkout@v2
+ 
+      - uses: jeffbuenting/UpdateModuleVersion@dev
 
-      - name: Retrieve current Version
-        shell: pwsh
-        run: |
-          $PSD = Get-Content "$($env:GITHUB_REPOSITORY -split '/')[-1]).psd1";
-          $CurrentVersion = $PSD | Select-String -Pattern "ModuleVersion = '(.*)'" | foreach { $_.Matches.Groups[1].Value }
-          
-      - name: Update Version
-        shell: pwsh
-        run: 
-          Write-Output "CurrentVersion = $CurrentVertion";
-          $SplitVer = $CurrentVersion -split '.';
-          $NewVer = "$SplitVer[0].$SplitVer[1].$([int]SplitVer[2] + 1)"
-          
-      - name: Update Module Manifest
-        shell: pwsh
-        run:
-          Update-ModuleManifest -Path "$($env:GITHUB_REPOSITORY -split '/')[-1]).psd1" -ModuleVersion $NewVer
+#      - name: Retrieve current Version
+#        shell: pwsh
+#        run: |
+#          $PSD = Get-Content "$($env:GITHUB_REPOSITORY -split '/')[-1]).psd1";
+#          $CurrentVersion = $PSD | Select-String -Pattern "ModuleVersion = '(.*)'" | foreach { $_.Matches.Groups[1].Value }
+#          
+#      - name: Update Version
+#        shell: pwsh
+#        run: 
+#          Write-Output "CurrentVersion = $CurrentVertion";
+#          $SplitVer = $CurrentVersion -split '.';
+#          $NewVer = "$SplitVer[0].$SplitVer[1].$([int]SplitVer[2] + 1)"
+#          
+#      - name: Update Module Manifest
+#        shell: pwsh
+#        run:
+#          Update-ModuleManifest -Path "$($env:GITHUB_REPOSITORY -split '/')[-1]).psd1" -ModuleVersion $NewVer
           
           
