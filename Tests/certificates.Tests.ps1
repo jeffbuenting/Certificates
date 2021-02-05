@@ -27,9 +27,9 @@ Describe "$ModuleName : Module Tests" {
     $testNames = Select-String -Path $testFile.FullName -Pattern 'describe\s[^\$].+?\s+:?\s+(.+)?\s+{' | ForEach-Object {
         [System.Management.Automation.PSParser]::Tokenize($_.Matches.Groups[1].Value, [ref]$null).Content
     }
-
+write-host "testnames = $TestNames"
     $moduleCommandNames = (Get-Command -Module $ModuleName | where CommandType -ne Alias)
-
+write-host "command = $ModuleCommandNames"
     it 'should have a test for each function' {
         Compare-Object $moduleCommandNames $testNames | where { $_.SideIndicator -eq '<=' } | select inputobject | should beNullOrEmpty
     }
