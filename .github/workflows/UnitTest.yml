@@ -28,3 +28,7 @@ jobs:
       with:
         include_paths: Tests
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Update Module Version
+      if: success()
+      uses: jeffbuenting/UpdateModuleVersion@main
