@@ -11,4 +11,6 @@ if ( -Not ( Test-Path -Path 'C:\Program Files\WindowsPowerShell\Scripts\Invoke-P
 }
 Write-Verbose "Dot Sourcing Invoke-Process"
 
+Get-ChildItem 'C:\Program Files\WindowsPowerShell\Scripts'
+
 . 'C:\Program Files\WindowsPowerShell\Scripts\Invoke-Process.ps1'
