@@ -18,17 +18,24 @@ on:
 jobs:
   pester-test:
     name: Pester test
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      
+      - name: pester-tests-report
+        uses: zyborg/pester-tests-report@v1.3.3
+        with:
+          include_paths: Tests
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        
+  UpdateModuleVersion:
+    name: Update Module Version
+    needs: pester-test
     runs-on: ubuntu-latest
     steps:
-    - name: Check out repository code
-      uses: actions/checkout@v2
-      
-    - name: pester-tests-report
-      uses: zyborg/pester-tests-report@v1.3.3
-      with:
-        include_paths: Tests
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check out repository code
+        uses: actions/checkout@v2
         
-    - name: Update Module Version
-      if: success()
-      uses: jeffbuenting/UpdateModuleVersion@main
+      - name: Update Module Version
+        uses: jeffbuenting/UpdateModuleVersion@main
