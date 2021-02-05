@@ -20,7 +20,7 @@ jobs:
       uses: actions/checkout@v2
       
     - name: Install-InvokeProcess
-      run: ./Functions/Helper/Install-InvokeProcess.ps1
+      run: get-childitem -path . -recurse
       shell: pwsh
       
     - name: pester-tests-report
