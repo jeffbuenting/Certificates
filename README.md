@@ -6,7 +6,7 @@ The Microsoft Windows Certificate powershell module (PKI) is missing some functi
 
 ---
 
-[![GitHub Workflow - CI](https://github.com/jeffbuenting/Certificates/workflows/test-action/badge.svg)](https://github.com/jeffbuenting/Certificates/actions?workflow=test-action)
+[![GitHub Workflow - CI](https://github.com/jeffbuenting/Certificates/workflows/CI/badge.svg)](https://github.com/jeffbuenting/Certificates/actions?workflow=CI)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/jeffbuenting/Certificates)](https://github.com/jeffbuenting/Certificates/releases/latest)
 
 ---
