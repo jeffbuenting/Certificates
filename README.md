@@ -4,6 +4,13 @@
 
 The Microsoft Windows Certificate powershell module (PKI) is missing some functinality.  This module contains the functions that I have needed from time to time to automate various software installs.
 
+---
+
+[![GitHub Workflow - CI](https://github.com/jeffbuenting/Certificates/workflows/test-action/badge.svg)](https://github.com/jeffbuenting/Certificates/actions?workflow=test-action)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/jeffbuenting/Certificates)](https://github.com/jeffbuenting/Certificates/releases/latest)
+
+---
+
 ### Branch Status
 
 Master Version: 1.6.9
