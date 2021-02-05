@@ -1,0 +1,43 @@
+
+name: UpdatePSModuleVersion
+
+on:
+  push:
+    branches: 
+      'jeffbuenting-patch-1'
+      
+  workflow_run:
+    workflows: "UnitTest"
+    types:
+      - completed
+
+  workflow_dispatch:
+
+jobs:
+  # ----- Only run if UnitTest workflow completed successfully
+  if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+  build:
+    runs-on: ubuntu-latest
+  
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Retrieve current Version
+        shell: pwsh
+        run: |
+          $PSD = Get-Content "$($env:GITHUB_REPOSITORY -split '/')[-1]).psd1";
+          $CurrentVersion = $PSD | Select-String -Pattern "ModuleVersion = '(.*)'" | foreach { $_.Matches.Groups[1].Value }
+          
+      - name: Update Version
+        shell: pwsh
+        run:
+          $SplitVer = $CurrentVersion -split '.';
+          $NewVer = "$SplitVer[0].$SplitVer[1].$([int]SplitVer[2] + 1)"
+          
+      - name: Update Module Manifest
+        shell: pwsh
+        run:
+          Update-ModuleManifest -Path "$($env:GITHUB_REPOSITORY -split '/')[-1]).psd1" -ModuleVersion $NewVer
+          
+          
