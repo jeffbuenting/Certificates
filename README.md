@@ -7,9 +7,8 @@ The Microsoft Windows Certificate powershell module (PKI) is missing some functi
 ---
 
 [![GitHub Workflow - UnitTest](https://github.com/jeffbuenting/Certificates/workflows/UnitTest/badge.svg)](https://github.com/jeffbuenting/Certificates/actions?workflow='UnitTest')
-<!-- [![GitHub release (latest by date)](https://img.shields.io/github/v/release/jeffbuenting/Certificates)](x.x.x) -->
-[![GitHub release (latest by date)](x.x.x)]   
-Version x.x.x
+
+![Version](https://img.shields.io/badge/Version-2.0.3-brightgreen)
 
 ---
 
