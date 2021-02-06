@@ -11,7 +11,6 @@ The Microsoft Windows Certificate powershell module (PKI) is missing some functi
 [![GitHub release (latest by date)](x.x.x)]   
 Version x.x.x
 
-
 ---
 
 
