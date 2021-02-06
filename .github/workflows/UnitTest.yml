@@ -45,6 +45,9 @@ jobs:
       - name: Commit
         if: ${{ success() }}
         run: |
+          "-----"
+          cat certificate.psd1
+          "-----"
           git status
           git config --global user.name 'github actions'      
           git config --global user.email 'actions@github.com'
