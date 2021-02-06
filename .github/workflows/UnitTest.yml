@@ -18,6 +18,7 @@ on:
 jobs:
   pester-test:
     name: Pester test
+    if: "!contains(github.event.commits[0].message, '[skip ci]')"
     runs-on: windows-latest
     steps:
       - name: Check out repository code
@@ -40,3 +41,15 @@ jobs:
         
       - name: Update Module Version
         uses: jeffbuenting/UpdateModuleVersion@dev
+
+  CommitBack:
+    name: Commit Back to branch
+    needs: UpdateModuleVersion
+    if: ${{ success() }}
+    runs-on: Ubuntu-latest
+    steps:
+      - name: Commit
+        run: |
+          git config --global user.name ${{ GITHUB_ACTOR }}      #         git config --global user.email 'your-username@users.noreply.github.com'
+          git commit -am "skip ci - Unit Test Version Update"
+          git push
